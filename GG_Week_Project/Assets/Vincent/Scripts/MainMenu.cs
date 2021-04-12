@@ -21,12 +21,8 @@ public class MainMenu : MonoBehaviour
 
     public void Credits()
     {
-        if (SceneToLoad_Credits != "")
-        {
-            SceneManager.LoadScene(SceneToLoad_Credits);
-            return;
-        }
-        print("No scene is linked!");
+        SceneManager.LoadScene("CreditsMenu");
+
     }
 
     public void Quit()
