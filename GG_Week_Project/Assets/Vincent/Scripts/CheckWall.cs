@@ -4,11 +4,11 @@ using UnityEngine;
 
 public class CheckWall : MonoBehaviour
 {
-    private Player parent;
+    private PlayerMovements parent;
 
     private void Start()
     {
-        parent = transform.parent.GetComponent<Player>();
+        parent = transform.parent.GetComponent<PlayerMovements>();
         Physics2D.IgnoreCollision(GetComponent<Collider2D>(), parent.GetComponent<Collider2D>());
 
     }

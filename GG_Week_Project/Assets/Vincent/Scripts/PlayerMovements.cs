@@ -2,8 +2,10 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : MonoBehaviour
+public class PlayerMovements : MonoBehaviour
 {
+
+    // ----------------------------------------- DEPLACEMENTS
     private bool canMove = true;
     [Header("RUN")]
     public float speed;
@@ -22,9 +24,13 @@ public class Player : MonoBehaviour
     private Collider2D rouladeChild;
     Coroutine rouladeCoroutine = null;
 
-    [Header("DOWN")]
+   
+    
     private bool isDown = false;
-    public float speedDown; 
+    [Header("DOWN")]
+    public float speedDown;
+    [HideInInspector]
+    public bool isCrouch = false;
     
 
     [HideInInspector]
@@ -35,6 +41,14 @@ public class Player : MonoBehaviour
 
     private float direction;
 
+
+
+    // ---------------------------------------------------WEAPONS
+    [HideInInspector]
+    public enum WEAPON { PUNCH, SWORD, ARC, PIG }
+    public WEAPON PlayerWeapon = WEAPON.PUNCH;
+
+    public GameObject Punch;
 
 
     // Start is called before the first frame update
@@ -165,6 +179,7 @@ public class Player : MonoBehaviour
 
     IEnumerator Roulade(float duration)
     {
+        isCrouch = true;
         canRoulade = false;
         rouladeChild.enabled = true;
         playerCollider.enabled = false;
@@ -177,7 +192,7 @@ public class Player : MonoBehaviour
 
         if (!Input.GetKey(KeyCode.LeftControl))
         {
-            
+         
             GetComponent<SpriteRenderer>().enabled = true;  // --------------------------------TEMPORARY
             rouladeChild.GetComponent<SpriteRenderer>().enabled = false;  // --------------------------------TEMPORARY
             rouladeChild.enabled = false;
@@ -191,6 +206,7 @@ public class Player : MonoBehaviour
 
     private void StopRoulade()
     {
+        isCrouch = false;
         StopCoroutine(rouladeCoroutine);
         GetComponent<SpriteRenderer>().enabled = true;
         rouladeChild.GetComponent<SpriteRenderer>().enabled = false;
@@ -204,6 +220,7 @@ public class Player : MonoBehaviour
 
     private void GetDown()
     {
+        isCrouch = true;
         isDown = true;
         speed *= speedDown;
         rouladeChild.enabled = true;
@@ -214,6 +231,7 @@ public class Player : MonoBehaviour
 
     private void GetUp()
     {
+        isCrouch = false;
         isDown = false;
         speed /= speedDown;
         rouladeChild.enabled = false;
@@ -229,4 +247,36 @@ public class Player : MonoBehaviour
         isGrippingWall = false;
     }
 
+
+
+    // --------------------------------------------------------- WEAPONS
+
+
+    public void PickUpWeapon(WEAPON weapon)
+    {
+        if(weapon == WEAPON.SWORD)
+        {
+            PlayerWeapon = WEAPON.SWORD;
+            return;
+        }
+        if(weapon == WEAPON.ARC)
+        {
+            PlayerWeapon = WEAPON.ARC;
+            return;
+        }
+        if(weapon == WEAPON.PIG)
+        {
+            PlayerWeapon = WEAPON.PIG;
+        }
+    }
+
+    public void LoseWeapon()
+    {
+        PlayerWeapon = WEAPON.PUNCH;
+    }
+
+    public void ThrowWeapon()
+    {
+        PlayerWeapon = WEAPON.PUNCH;
+    }
 }
