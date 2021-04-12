@@ -14,13 +14,13 @@ public class CheckWall : MonoBehaviour
     }
     private void OnTriggerEnter2D(Collider2D collision)
     {
-        print("grounded");
         parent.onWall = true;
+        parent.StartCoroutine("GripWall");
     }
 
     private void OnTriggerExit2D(Collider2D collision)
     {
-        print("notGrounded");
+        parent.isGrippingWall = false;
         parent.onWall = false;
     }
 
