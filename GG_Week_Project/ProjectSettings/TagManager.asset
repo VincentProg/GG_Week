@@ -14,9 +14,9 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
+  - Wall_And_Ground
+  - Player_CheckWalls_And_Ground
+  - Weapon
   - 
   - 
   - 

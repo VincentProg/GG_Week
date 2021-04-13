@@ -54,7 +54,7 @@ public class Player : MonoBehaviour
 
     // ---------------------------------------------------WEAPONS
     [Header("WEAPONS")]
-    public WeaponGround.WEAPON PlayerWeapon;
+    public Weapon.TYPE PlayerWeapon = Weapon.TYPE.PUNCH;
 
     private bool canAttack = true;
     public GameObject punch;
@@ -67,7 +67,7 @@ public class Player : MonoBehaviour
     private Animator anim;
 
 
-    public List<WeaponGround> weaponsNear = new List<WeaponGround>();
+    public List<Weapon> weaponsNear = new List<Weapon>();
     // ------------------------------------------------- HEALTH
 
     private bool isDead = false;
@@ -166,23 +166,21 @@ public class Player : MonoBehaviour
                         {
                             rouladeCoroutine = StartCoroutine(Roulade(durationRoulade));
                         }
-                        return;
                     }
                     else
                     {
                         GetDown();
                     }
 
-                    if (PlayerWeapon == WeaponGround.WEAPON.PUNCH) // ------------ PICK UP WEAPON
+                    if (PlayerWeapon == Weapon.TYPE.PUNCH) // ------------ PICK UP WEAPON
                     {
-                        print("PICK UPPP");
                         Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, 0.5f), 0.3f);
                         for (int i = 0; i < objects.Length; i++)
                         {
-                            if (objects[i].GetComponent<WeaponGround>())
+                            if (objects[i].GetComponent<Weapon>())
                             {
-                                PickUpWeapon(objects[i].GetComponent<WeaponGround>().thisWeapon);
-                                Destroy(objects[i]);
+                                PickUpWeapon(objects[i].GetComponent<Weapon>().thisWeapon);
+                                Destroy(objects[i].gameObject);
                             }
                         }
 
@@ -337,34 +335,34 @@ public class Player : MonoBehaviour
 
 
 
-    public void PickUpWeapon(WeaponGround.WEAPON weapon)
+    public void PickUpWeapon(Weapon.TYPE weapon)
     {
 
 
-        if(weapon == WeaponGround.WEAPON.SWORD)
+        if(weapon == Weapon.TYPE.SWORD)
         {
-            PlayerWeapon = WeaponGround.WEAPON.SWORD;
+            PlayerWeapon = Weapon.TYPE.SWORD;
             return;
         }
-        if(weapon == WeaponGround.WEAPON.ARC)
+        if(weapon == Weapon.TYPE.ARC)
         {
-            PlayerWeapon = WeaponGround.WEAPON.ARC;
+            PlayerWeapon = Weapon.TYPE.ARC;
             return;
         }
-        if(weapon == WeaponGround.WEAPON.PIG)
+        if(weapon == Weapon.TYPE.PIG)
         {
-            PlayerWeapon = WeaponGround.WEAPON.PIG;
+            PlayerWeapon = Weapon.TYPE.PIG;
         }
     }
 
     public void LoseWeapon()
     {
-        PlayerWeapon = WeaponGround.WEAPON.PUNCH;
+        PlayerWeapon = Weapon.TYPE.PUNCH;
     }
 
     public void ThrowWeapon()
     {
-        PlayerWeapon = WeaponGround.WEAPON.PUNCH;
+        PlayerWeapon = Weapon.TYPE.PUNCH;
     }
 
 
@@ -372,15 +370,15 @@ public class Player : MonoBehaviour
     {
         if (canAttack)
         {
-            if (PlayerWeapon == WeaponGround.WEAPON.PUNCH)
+            if (PlayerWeapon == Weapon.TYPE.PUNCH)
             {
 
             }
-            if (PlayerWeapon == WeaponGround.WEAPON.SWORD)
+            if (PlayerWeapon == Weapon.TYPE.SWORD)
             {
 
             }
-            if (PlayerWeapon == WeaponGround.WEAPON.ARC)
+            if (PlayerWeapon == Weapon.TYPE.ARC)
             {
 
                 StartCoroutine(DelayAttack(delayArc));
@@ -395,7 +393,7 @@ public class Player : MonoBehaviour
                 newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
 
             }
-            if (PlayerWeapon == WeaponGround.WEAPON.PIG)
+            if (PlayerWeapon == Weapon.TYPE.PIG)
             {
 
             }
