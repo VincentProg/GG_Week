@@ -2,11 +2,20 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class PlayerMovements : MonoBehaviour
+public class Player : MonoBehaviour
 {
+
+    // ----------------------------------------- INPUTS
+
+    public KeyCode keyMoveRight;
+    public KeyCode keyMoveLeft;
+    public KeyCode keyJump;
+    public KeyCode keyDown;
+    public KeyCode keyAttack;
 
     // ----------------------------------------- DEPLACEMENTS
     private bool canMove = true;
+    private bool inversedSprite;
     [Header("RUN")]
     public float speed;
     [Header("JUMPS")]
@@ -46,9 +55,18 @@ public class PlayerMovements : MonoBehaviour
     // ---------------------------------------------------WEAPONS
     [HideInInspector]
     public enum WEAPON { PUNCH, SWORD, ARC, PIG }
+    [Header("WEAPONS")]
     public WEAPON PlayerWeapon = WEAPON.PUNCH;
 
-    public GameObject Punch;
+    private bool canAttack = true;
+    public GameObject punch;
+    public GameObject sword;
+    public GameObject arc;
+    public GameObject arrow;
+    public float arrowSpeed;
+    public float delayArc;
+    public GameObject pig;
+    private Animator anim;
 
 
     // Start is called before the first frame update
@@ -64,7 +82,31 @@ public class PlayerMovements : MonoBehaviour
     {
         if (canMove)
         {
-            direction = Input.GetAxis("Horizontal");
+            if (Input.GetKeyDown(keyMoveLeft))
+            {
+                direction--;
+            }
+            if (Input.GetKeyDown(keyMoveRight))
+            {
+                direction++;
+            }
+            if (Input.GetKeyUp(keyMoveLeft)){
+                direction++;
+            }
+            if (Input.GetKeyUp(keyMoveRight))
+            {
+                direction--;
+            }
+            if (direction < 0)
+            {
+                transform.localScale = new Vector3(1, -1, 1);
+                inversedSprite = true;
+            }
+            else if (direction > 0)
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+                inversedSprite = false;
+            }
 
             if (Input.GetButtonDown("Jump"))
             {
@@ -132,6 +174,11 @@ public class PlayerMovements : MonoBehaviour
             rb.velocity = new Vector2(rb.velocity.x, 0);
         }
 
+
+        if (Input.GetMouseButtonDown(0))
+        {
+            Attack();
+        }
         
     }
 
@@ -278,5 +325,53 @@ public class PlayerMovements : MonoBehaviour
     public void ThrowWeapon()
     {
         PlayerWeapon = WEAPON.PUNCH;
+    }
+
+
+    void Attack()
+    {
+        if (canAttack)
+        {
+            if (PlayerWeapon == WEAPON.PUNCH)
+            {
+
+            }
+            if (PlayerWeapon == WEAPON.SWORD)
+            {
+
+            }
+            if (PlayerWeapon == WEAPON.ARC)
+            {
+
+                StartCoroutine(DelayAttack(delayArc));
+                int sens = 1;
+                GameObject newArrow = Instantiate(arrow, arc.transform.position, arrow.transform.rotation);
+                if (inversedSprite)
+                {
+                    sens = -1;
+                    newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
+                }
+                Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
+                newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
+
+            }
+            if (PlayerWeapon == WEAPON.PIG)
+            {
+
+            }
+        }
+    }
+
+    public void Death()
+    {
+        print("death");
+    }
+
+    IEnumerator DelayAttack(float delay)
+    {
+        print("delay");
+        canAttack = false;
+        yield return new WaitForSeconds(delay);
+        canAttack = true;
     }
 }
