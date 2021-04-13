@@ -12,6 +12,7 @@ public class Player : MonoBehaviour
     public KeyCode keyJump;
     public KeyCode keyDown;
     public KeyCode keyAttack;
+    public KeyCode keyThrow;
 
     // ----------------------------------------- DEPLACEMENTS
 
@@ -64,14 +65,18 @@ public class Player : MonoBehaviour
     public float arrowSpeed;
     public float delayArc;
     public GameObject pig;
+    public float throwStrength;
     private Animator anim;
 
+    public GameObject swordPrefab;
+    public GameObject arcPrefab;
+    public GameObject pigPrefab;
 
     public List<Weapon> weaponsNear = new List<Weapon>();
     // ------------------------------------------------- HEALTH
 
     private bool isDead = false;
-    private int health = 3;
+    public int health = 3;
 
     // ------------------------------------------------- INSTANCES
     public int id;
@@ -183,15 +188,8 @@ public class Player : MonoBehaviour
                                 Destroy(objects[i].gameObject);
                             }
                         }
-
-
-
-
                     }
                 }
-
-                
-
             }
 
             if (Input.GetKeyUp(keyDown))
@@ -200,6 +198,11 @@ public class Player : MonoBehaviour
                 {
                     GetUp();
                 }
+            }
+
+            if (Input.GetKeyDown(keyThrow))
+            {
+                ThrowWeapon();
             }
 
 
@@ -362,7 +365,37 @@ public class Player : MonoBehaviour
 
     public void ThrowWeapon()
     {
-        PlayerWeapon = Weapon.TYPE.PUNCH;
+        if (PlayerWeapon != Weapon.TYPE.PUNCH)
+        {
+            Collider2D col = GetComponent<Collider2D>();
+            Collider2D colEnfant = transform.GetChild(0).GetComponent<Collider2D>();
+
+            switch (PlayerWeapon)
+            {
+                case Weapon.TYPE.SWORD:
+                    GameObject swordThrow = Instantiate(swordPrefab, sword.transform.position, transform.rotation);
+                    Physics2D.IgnoreCollision(col, swordThrow.GetComponent<Collider2D>());
+                    Physics2D.IgnoreCollision(colEnfant, swordThrow.GetComponent<Collider2D>());
+                    swordThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    break;
+
+                case Weapon.TYPE.ARC:
+                    GameObject arcThrow = Instantiate(arcPrefab, sword.transform.position, transform.rotation);
+                    Physics2D.IgnoreCollision(col, arcThrow.GetComponent<Collider2D>());
+                    Physics2D.IgnoreCollision(colEnfant, arcThrow.GetComponent<Collider2D>());
+                    arcThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    break;
+                case Weapon.TYPE.PIG:
+                    GameObject pigThrow = Instantiate(pigPrefab, sword.transform.position, transform.rotation);
+                    Physics2D.IgnoreCollision(col, pigThrow.GetComponent<Collider2D>());
+                    Physics2D.IgnoreCollision(colEnfant,pigThrow.GetComponent<Collider2D>());
+                    pigThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    break;
+            }
+
+            PlayerWeapon = Weapon.TYPE.PUNCH;
+        }
+        
     }
 
 
@@ -400,8 +433,12 @@ public class Player : MonoBehaviour
         }
     }
 
+
+
+
     public void TakeDamages(int damages)
     {
+        print("damages");
         health -= damages;
         if(health <= 0)
         {
@@ -422,4 +459,12 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(delay);
         canAttack = true;
     }
+
+    //IEnumerator DurationIgnoreCollision(Collider2D col, Collider2D colEnfant, Collider2D colWeapon)
+    //{
+    //    
+    //    yield return new WaitForSeconds(0.2f);
+    //    Physics2D.IgnoreCollision(col, colWeapon, false);
+    //    Physics2D.IgnoreCollision(colEnfant, colWeapon, false);
+    //}
 }
