@@ -2,10 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class WeaponCAC : MonoBehaviour
+public class PlayerWeaponCAC : MonoBehaviour
 {
 
     private Collider2D col;
+    public int damages;
     
 
     // Start is called before the first frame update
@@ -25,7 +26,7 @@ public class WeaponCAC : MonoBehaviour
     {
         if (collision.CompareTag("Player"))
         {
-            collision.GetComponent<Player>().Death();
+            collision.GetComponent<Player>().TakeDamages(damages);
         }
     }
 
