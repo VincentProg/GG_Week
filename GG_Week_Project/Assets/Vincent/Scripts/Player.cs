@@ -14,7 +14,7 @@ public class Player : MonoBehaviour
     public KeyCode keyAttack;
 
     // ----------------------------------------- DEPLACEMENTS
-    private bool canMove = true;
+
     private bool inversedSprite;
     [Header("RUN")]
     public float speed;
@@ -53,10 +53,8 @@ public class Player : MonoBehaviour
 
 
     // ---------------------------------------------------WEAPONS
-    [HideInInspector]
-    public enum WEAPON { PUNCH, SWORD, ARC, PIG }
     [Header("WEAPONS")]
-    public WEAPON PlayerWeapon = WEAPON.PUNCH;
+    public WeaponGround.WEAPON PlayerWeapon;
 
     private bool canAttack = true;
     public GameObject punch;
@@ -69,9 +67,29 @@ public class Player : MonoBehaviour
     private Animator anim;
 
 
+    public List<WeaponGround> weaponsNear = new List<WeaponGround>();
+    // ------------------------------------------------- HEALTH
+
+    private bool isDead = false;
+    private int health = 3;
+
+    // ------------------------------------------------- INSTANCES
+    public int id;
+
     // Start is called before the first frame update
     void Start()
     {
+        if (PlayerManager.instance.player1 == null)
+        {
+            PlayerManager.instance.player1 = this;
+            id = 1;
+        } else 
+        {
+            PlayerManager.instance.player2 = this;
+            id = 2;
+        }
+
+
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         rouladeChild = transform.GetChild(0).GetComponent<Collider2D>();
@@ -80,7 +98,7 @@ public class Player : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (canMove)
+        if (!isDead)
         {
             if (Input.GetKeyDown(keyMoveLeft))
             {
@@ -108,7 +126,7 @@ public class Player : MonoBehaviour
                 inversedSprite = false;
             }
 
-            if (Input.GetButtonDown("Jump"))
+            if (Input.GetKeyDown(keyJump))
             {
                 if (grounded)
                 {
@@ -137,7 +155,7 @@ public class Player : MonoBehaviour
                 }
             }
 
-            if (Input.GetKeyDown(KeyCode.LeftControl))
+            if (Input.GetKeyDown(keyDown))
             {
                 if (grounded)
                 {
@@ -154,11 +172,31 @@ public class Player : MonoBehaviour
                     {
                         GetDown();
                     }
+
+                    if (PlayerWeapon == WeaponGround.WEAPON.PUNCH) // ------------ PICK UP WEAPON
+                    {
+                        print("PICK UPPP");
+                        Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, 0.5f), 0.3f);
+                        for (int i = 0; i < objects.Length; i++)
+                        {
+                            if (objects[i].GetComponent<WeaponGround>())
+                            {
+                                PickUpWeapon(objects[i].GetComponent<WeaponGround>().thisWeapon);
+                                Destroy(objects[i]);
+                            }
+                        }
+
+
+
+
+                    }
                 }
+
+                
 
             }
 
-            if (Input.GetKeyUp(KeyCode.LeftControl))
+            if (Input.GetKeyUp(keyDown))
             {
                 if (isDown)
                 {
@@ -182,9 +220,14 @@ public class Player : MonoBehaviour
         
     }
 
+    private void OnDrawGizmos()
+    {
+        Gizmos.DrawLine(transform.position - new Vector3(0,0.5f), transform.position + (Vector3.right * 0.3f) - new Vector3(0, 0.5f));
+    }
+
     private void FixedUpdate()
     {
-        if (canMove)
+        if (!isDead)
         {
             if (grounded)
             {
@@ -216,13 +259,6 @@ public class Player : MonoBehaviour
         rb.AddForce(wallJump, ForceMode2D.Impulse);
     }
 
-    IEnumerator stopMoving(float delay)
-    {
-
-        canMove = false;
-        yield return new WaitForSeconds(delay);
-        canMove = true;
-    }
 
     IEnumerator Roulade(float duration)
     {
@@ -299,32 +335,36 @@ public class Player : MonoBehaviour
     // --------------------------------------------------------- WEAPONS
 
 
-    public void PickUpWeapon(WEAPON weapon)
+
+
+    public void PickUpWeapon(WeaponGround.WEAPON weapon)
     {
-        if(weapon == WEAPON.SWORD)
+
+
+        if(weapon == WeaponGround.WEAPON.SWORD)
         {
-            PlayerWeapon = WEAPON.SWORD;
+            PlayerWeapon = WeaponGround.WEAPON.SWORD;
             return;
         }
-        if(weapon == WEAPON.ARC)
+        if(weapon == WeaponGround.WEAPON.ARC)
         {
-            PlayerWeapon = WEAPON.ARC;
+            PlayerWeapon = WeaponGround.WEAPON.ARC;
             return;
         }
-        if(weapon == WEAPON.PIG)
+        if(weapon == WeaponGround.WEAPON.PIG)
         {
-            PlayerWeapon = WEAPON.PIG;
+            PlayerWeapon = WeaponGround.WEAPON.PIG;
         }
     }
 
     public void LoseWeapon()
     {
-        PlayerWeapon = WEAPON.PUNCH;
+        PlayerWeapon = WeaponGround.WEAPON.PUNCH;
     }
 
     public void ThrowWeapon()
     {
-        PlayerWeapon = WEAPON.PUNCH;
+        PlayerWeapon = WeaponGround.WEAPON.PUNCH;
     }
 
 
@@ -332,15 +372,15 @@ public class Player : MonoBehaviour
     {
         if (canAttack)
         {
-            if (PlayerWeapon == WEAPON.PUNCH)
+            if (PlayerWeapon == WeaponGround.WEAPON.PUNCH)
             {
 
             }
-            if (PlayerWeapon == WEAPON.SWORD)
+            if (PlayerWeapon == WeaponGround.WEAPON.SWORD)
             {
 
             }
-            if (PlayerWeapon == WEAPON.ARC)
+            if (PlayerWeapon == WeaponGround.WEAPON.ARC)
             {
 
                 StartCoroutine(DelayAttack(delayArc));
@@ -355,16 +395,26 @@ public class Player : MonoBehaviour
                 newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
 
             }
-            if (PlayerWeapon == WEAPON.PIG)
+            if (PlayerWeapon == WeaponGround.WEAPON.PIG)
             {
 
             }
         }
     }
 
+    public void TakeDamages(int damages)
+    {
+        health -= damages;
+        if(health <= 0)
+        {
+            Death();
+        }
+    }
+
     public void Death()
     {
         print("death");
+        isDead = true;
     }
 
     IEnumerator DelayAttack(float delay)
