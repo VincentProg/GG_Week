@@ -4,12 +4,18 @@ using UnityEngine;
 
 public class DeathZone : MonoBehaviour
 {
-    bool death = false;
+    [SerializeField] Transform SpawnPlayer1;
+    [SerializeField] Transform SpawnPlayer2;
 
     void OnTriggerEnter2D(Collider2D col)
     {
-        death = true;
-        Debug.Log("T'es mort !");
-        Destroy(col.gameObject);
+        if (col.transform.CompareTag("Player1"))
+        {
+            col.transform.position = SpawnPlayer1.position;
+        }
+        if (col.transform.CompareTag("Player2"))
+        {
+            col.transform.position = SpawnPlayer2.position;
+        }
     }
 }
