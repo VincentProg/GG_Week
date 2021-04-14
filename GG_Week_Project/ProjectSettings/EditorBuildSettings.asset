@@ -5,7 +5,16 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
+  - enabled: 0
     path: Assets/Vincent/Scenes/Vincent.unity
     guid: 2cda990e2423bbf4892e6590ba056729
+  - enabled: 1
+    path: Assets/Vincent/Scenes/Menu.unity
+    guid: da8d89628ecf45e41ac709580529d5ba
+  - enabled: 1
+    path: Assets/Vincent/Scenes/VictoryP2.unity
+    guid: e8145981f23d48a4ba13af9e5d225c83
+  - enabled: 1
+    path: Assets/Vincent/Scenes/VictoryP1.unity
+    guid: 6339bf02584b62e40942888850cc41dc
   m_configObjects: {}
