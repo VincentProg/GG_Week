@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
+using UnityEngine.SceneManagement;
 
 public class SlectorMenu : MonoBehaviour
 {
@@ -14,6 +15,10 @@ public class SlectorMenu : MonoBehaviour
     public TextMeshProUGUI PrincessP2;
     public TextMeshProUGUI ExecutionerP2;
     public TextMeshProUGUI JesterP2;
+
+    public string sceneFight;
+    private bool Player1HasSelected;
+    private bool Player2HasSelected;
 
     void Start()
     {
@@ -39,6 +44,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP1.enabled = false;
         ExecutionerP1.enabled = false;
         JesterP1.enabled = false;
+
+        PlayerManager.instance.classPlayer1 = PlayerManager.CLASS.KNIGHT;
+        Player1HasSelected = true;
     }
 
     public void PrincessPlayer1()
@@ -47,6 +55,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP1.enabled = true;
         ExecutionerP1.enabled = false;
         JesterP1.enabled = false;
+
+        PlayerManager.instance.classPlayer1 = PlayerManager.CLASS.PRINCESS;
+        Player1HasSelected = true;
     }
 
     public void ExecutionerPlayer1()
@@ -55,6 +66,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP1.enabled = false;
         ExecutionerP1.enabled = true;
         JesterP1.enabled = false;
+
+        PlayerManager.instance.classPlayer1 = PlayerManager.CLASS.EXECUTIONER;
+        Player1HasSelected = true;
     }
 
     public void JesterPlayer1()
@@ -63,6 +77,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP1.enabled = false;
         ExecutionerP1.enabled = false;
         JesterP1.enabled = true;
+
+        PlayerManager.instance.classPlayer1 = PlayerManager.CLASS.CLOWN;
+        Player1HasSelected = true;
     }
 
     public void KnightPlayer2()
@@ -71,6 +88,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP2.enabled = false;
         ExecutionerP2.enabled = false;
         JesterP2.enabled = false;
+
+        PlayerManager.instance.classPlayer2 = PlayerManager.CLASS.KNIGHT;
+        Player2HasSelected = true;
     }
 
     public void PrincessPlayer2()
@@ -79,6 +99,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP2.enabled = true;
         ExecutionerP2.enabled = false;
         JesterP2.enabled = false;
+
+        PlayerManager.instance.classPlayer2 = PlayerManager.CLASS.PRINCESS;
+        Player2HasSelected = true;
     }
 
     public void ExecutionerPlayer2()
@@ -87,6 +110,9 @@ public class SlectorMenu : MonoBehaviour
         PrincessP2.enabled = false;
         ExecutionerP2.enabled = true;
         JesterP2.enabled = false;
+
+        PlayerManager.instance.classPlayer2 = PlayerManager.CLASS.EXECUTIONER;
+        Player2HasSelected = true;
     }
 
     public void JesterPlayer2()
@@ -95,5 +121,18 @@ public class SlectorMenu : MonoBehaviour
         PrincessP2.enabled = false;
         ExecutionerP2.enabled = false;
         JesterP2.enabled = true;
+
+        PlayerManager.instance.classPlayer2 = PlayerManager.CLASS.CLOWN;
+        Player2HasSelected = true;
     }
+    public void SaveCharactersAndStartFight()
+    {
+        if (Player1HasSelected && Player2HasSelected)
+        {
+            PlayerManager.instance.Save();
+            SceneManager.LoadScene(sceneFight);
+        }
+    }
+
+
 }
