@@ -10,6 +10,9 @@ public class PlayerManager : MonoBehaviour
     public Player player1;
     public Player player2;
 
+    public Transform transformPlayer1;
+    public Transform transformPlayer2;
+
     //[HideInInspector]
     //public enum WEAPON { PUNCH, SWORD, ARC, PIG }
 
@@ -24,6 +27,10 @@ public class PlayerManager : MonoBehaviour
     public Animator clownAnim;
     public Animator executionerAnim;
 
+
+    public Transform respawnP1;
+    public Transform respawnP2;
+
     private void Awake()
     {
         if(instance == null)
@@ -36,21 +43,22 @@ public class PlayerManager : MonoBehaviour
     {
         LoadSave();
 
-        switch (classPlayer1)
-        {
-            case CLASS.PRINCESS:
-                player1.anim = princessAnim;
-                break;
-            case CLASS.KNIGHT:
-                player1.anim = knightAnim;
-                break;
-            case CLASS.CLOWN:
-                player1.anim = clownAnim;
-                break;
-            case CLASS.EXECUTIONER:
-                player1.anim = executionerAnim;
-                break;
-        }
+        if (player1 != null)
+            switch (classPlayer1)
+            {
+                case CLASS.PRINCESS:
+                    player1.anim = princessAnim;
+                    break;
+                case CLASS.KNIGHT:
+                    player1.anim = knightAnim;
+                    break;
+                case CLASS.CLOWN:
+                    player1.anim = clownAnim;
+                    break;
+                case CLASS.EXECUTIONER:
+                    player1.anim = executionerAnim;
+                    break;
+            }
 
         if(player2 != null)
         switch (classPlayer2)
@@ -111,5 +119,11 @@ public class PlayerManager : MonoBehaviour
                 classPlayer2 = CLASS.EXECUTIONER;
                 break;
         }
+    }
+
+
+    public void Respawn(Player player)
+    {
+
     }
 }
