@@ -16,7 +16,7 @@ public class Victory : MonoBehaviour
             if (collision.GetComponent<Player>() == PlayerManager.instance.player1)
             {
                 print("player1");
-                SceneManager.LoadScene(victorySceneP2);
+                SceneManager.LoadScene(victorySceneP1);
                 return;
             }
 

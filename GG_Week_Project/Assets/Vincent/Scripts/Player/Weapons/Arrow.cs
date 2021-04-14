@@ -22,7 +22,6 @@ public class Arrow : MonoBehaviour
     {
         if(collision.CompareTag("Player"))
         {
-            print("Arrow collide");
             rb.velocity = Vector2.zero;
             //transform.parent = collision.transform;
             Destroy(gameObject);

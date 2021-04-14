@@ -13,6 +13,13 @@ public class PlayerManager : MonoBehaviour
     public Transform transformPlayer1;
     public Transform transformPlayer2;
 
+    private Cam cameraScene;
+    public GameObject wallBeforeKillL;
+    public GameObject wallBeforeKillR;
+
+    public GameObject arrowDirectionP1;
+    public GameObject arrowDirectionP2;
+
     //[HideInInspector]
     //public enum WEAPON { PUNCH, SWORD, ARC, PIG }
 
@@ -28,8 +35,13 @@ public class PlayerManager : MonoBehaviour
     public Animator executionerAnim;
 
 
-    public Transform respawnP1;
-    public Transform respawnP2;
+    public Transform respawnP1_1;
+    public Transform respawnP1_2;
+    public Transform respawnP2_1;
+    public Transform respawnP2_2;
+
+    public bool neutral;
+    public bool player1Dominant;
 
     private void Awake()
     {
@@ -76,6 +88,9 @@ public class PlayerManager : MonoBehaviour
                 player2.anim = executionerAnim;
                 break;
         }
+
+        cameraScene = FindObjectOfType<Cam>();
+        
     }
 
     public void Save()
@@ -122,8 +137,68 @@ public class PlayerManager : MonoBehaviour
     }
 
 
-    public void Respawn(Player player)
+    public void DeathPlayer(Player player)
     {
+        if(player == player1)
+        {
+            neutral = false;
+            player1Dominant = false;
+            arrowDirectionP1.SetActive(false);
+            arrowDirectionP2.SetActive(true);
+        } else
+        {
+            neutral = false;
+            player1Dominant = true;
+            arrowDirectionP1.SetActive(true);
+            arrowDirectionP2.SetActive(false);
+        }
+        StartCoroutine(RespawnPlayer(player));
+        cameraScene.canMove = true;
+        wallBeforeKillL.SetActive(false);
+        wallBeforeKillR.SetActive(false);
+    }
+
+    IEnumerator RespawnPlayer(Player player)
+    {
+        yield return new WaitForSeconds(2);
+        if(player == player1)
+        {
+            Vector2 distP2_R1_1 = new Vector2(respawnP1_1.position.x - transformPlayer2.position.x, 0);
+            print(distP2_R1_1);
+            if(distP2_R1_1.x < -5)
+            {
+                transformPlayer1.position = respawnP1_1.position;
+            } else
+            {
+                transformPlayer1.position = respawnP1_2.position;
+            }
+            transformPlayer1.gameObject.SetActive(true);
+            player1.isDead = false;
+            player1.ResetDirection();
+        } else
+        {
+            Vector2 distP1_R2_1 = new Vector2(respawnP2_1.position.x - transformPlayer1.position.x, 0);
+            print(distP1_R2_1);
+            if (distP1_R2_1.x > 5)
+            {
+                transformPlayer2.position = respawnP2_1.position;
+            }
+            else
+            {
+                transformPlayer2.position = respawnP2_2.position;
+            }
+            transformPlayer2.gameObject.SetActive(true);
+            player2.isDead = false;
+            player2.ResetDirection();
+        }
+
+        neutral = true;
+
+        cameraScene.Wall_P1.SetActive(false);
+        cameraScene.Wall_P2.SetActive(false);
+        yield return new WaitForSeconds(2);
+        cameraScene.Wall_P1.SetActive(true);
+        cameraScene.Wall_P2.SetActive(true);
 
     }
 }
