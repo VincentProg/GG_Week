@@ -75,7 +75,7 @@ public class Player : MonoBehaviour
     public List<Weapon> weaponsNear = new List<Weapon>();
     // ------------------------------------------------- HEALTH
 
-    private bool isDead = false;
+    public bool isDead = false;
     public int health = 3;
 
     // ------------------------------------------------- INSTANCES
@@ -98,7 +98,6 @@ public class Player : MonoBehaviour
         {
             PlayerManager.instance.player2 = this;
             PlayerManager.instance.transformPlayer2 = transform;
-            print("ALED");
         }
     }
 
@@ -175,7 +174,6 @@ public class Player : MonoBehaviour
                 {
                     if (Mathf.Abs(direction) > 0.6f)
                     {
-                        print("roulade");
                         if (canRoulade)
                         {
                             rouladeCoroutine = StartCoroutine(Roulade(durationRoulade));
@@ -223,7 +221,7 @@ public class Player : MonoBehaviour
         }
 
 
-        if (Input.GetMouseButtonDown(0))
+        if (Input.GetKeyDown(keyAttack))
         {
             Attack();
         }
@@ -258,7 +256,6 @@ public class Player : MonoBehaviour
         if (hit)
         {
             grounded = true;
-            print("grounded");
         } else
         {
             grounded = false;
@@ -305,7 +302,6 @@ public class Player : MonoBehaviour
         {
             GetDown();
         }
-        print("roualdeEnd");
     }
 
     private void StopRoulade()
@@ -318,7 +314,6 @@ public class Player : MonoBehaviour
         rouladeChild.enabled = false;
         playerCollider.enabled = true;
         canRoulade = true;
-        print("StopRoulade");
 
     }
 
@@ -458,7 +453,6 @@ public class Player : MonoBehaviour
 
     public void TakeDamages(int damages)
     {
-        print("damages");
         health -= damages;
         if(health <= 0)
         {
@@ -468,23 +462,29 @@ public class Player : MonoBehaviour
 
     public void Death()
     {
-        print("death");
         isDead = true;
+        gameObject.SetActive(false);
+        PlayerManager.instance.DeathPlayer(this);
+    }
+
+    public void ResetDirection()
+    {
+        direction = 0;
+        if (Input.GetKey(keyMoveRight))
+        {
+            direction++;
+        }
+        if (Input.GetKey(keyMoveLeft))
+        {
+            direction--;
+        }
     }
 
     IEnumerator DelayAttack(float delay)
     {
-        print("delay");
         canAttack = false;
         yield return new WaitForSeconds(delay);
         canAttack = true;
     }
 
-    //IEnumerator DurationIgnoreCollision(Collider2D col, Collider2D colEnfant, Collider2D colWeapon)
-    //{
-    //    
-    //    yield return new WaitForSeconds(0.2f);
-    //    Physics2D.IgnoreCollision(col, colWeapon, false);
-    //    Physics2D.IgnoreCollision(colEnfant, colWeapon, false);
-    //}
 }
