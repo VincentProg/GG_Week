@@ -92,10 +92,13 @@ public class Player : MonoBehaviour
         if (id == 1)
         {
             PlayerManager.instance.player1 = this;
+            PlayerManager.instance.transformPlayer1 = transform;
         }
         else
         {
             PlayerManager.instance.player2 = this;
+            PlayerManager.instance.transformPlayer2 = transform;
+            print("ALED");
         }
     }
 

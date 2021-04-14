@@ -20,6 +20,9 @@ public class SlectorMenu : MonoBehaviour
     private bool Player1HasSelected;
     private bool Player2HasSelected;
 
+    public KeyCode keyPlay;
+    public GameObject choseCharacter;
+
     void Start()
     {
         KnightP1.enabled = false;
@@ -35,7 +38,10 @@ public class SlectorMenu : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        
+        if (Input.GetKeyDown(keyPlay))
+        { 
+           SaveCharactersAndStartFight();
+        }
     }
 
     public void KnightPlayer1()
@@ -132,6 +138,14 @@ public class SlectorMenu : MonoBehaviour
             PlayerManager.instance.Save();
             SceneManager.LoadScene(sceneFight);
         }
+        else StartCoroutine("Warning");
+    }
+
+    IEnumerator Warning()
+    {
+        choseCharacter.SetActive(true);
+        yield return new WaitForSeconds(2);
+        choseCharacter.SetActive(false);
     }
 
 
