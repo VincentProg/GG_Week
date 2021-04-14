@@ -45,6 +45,7 @@ public class Player : MonoBehaviour
 
     [HideInInspector]
     public bool grounded = true;
+    public Transform checkground;
     [HideInInspector]
     public bool onWall = false;
     private Rigidbody2D rb;
@@ -66,7 +67,6 @@ public class Player : MonoBehaviour
     public float delayArc;
     public GameObject pig;
     public float throwStrength;
-    private Animator anim;
 
     public GameObject swordPrefab;
     public GameObject arcPrefab;
@@ -81,20 +81,26 @@ public class Player : MonoBehaviour
     // ------------------------------------------------- INSTANCES
     public int id;
 
+
+    // -------------------------------------------------- ANIMATIONS
+    public Animator anim;
+
     // Start is called before the first frame update
-    void Start()
+
+    private void Awake()
     {
-        if (PlayerManager.instance.player1 == null)
+        if (id == 1)
         {
             PlayerManager.instance.player1 = this;
-            id = 1;
-        } else 
+        }
+        else
         {
             PlayerManager.instance.player2 = this;
-            id = 2;
         }
+    }
 
-
+    void Start()
+    {
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         rouladeChild = transform.GetChild(0).GetComponent<Collider2D>();
@@ -245,6 +251,17 @@ public class Player : MonoBehaviour
 
             }
         }
+        RaycastHit2D hit = Physics2D.Raycast(checkground.position, Vector2.down, 0.2f, 1<<6);
+        if (hit)
+        {
+            grounded = true;
+            print("grounded");
+        } else
+        {
+            grounded = false;
+        }
+
+        Debug.DrawLine(checkground.position, checkground.position + Vector3.down * 0.2f);
     }
 
     private void Jump()

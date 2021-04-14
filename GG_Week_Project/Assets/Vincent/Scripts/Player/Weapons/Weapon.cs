@@ -62,7 +62,10 @@ public class Weapon : MonoBehaviour
         
         Physics2D.IgnoreCollision(col, PlayerManager.instance.player1.GetComponent<Collider2D>());
         Physics2D.IgnoreCollision(col, PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>());
-        Physics2D.IgnoreCollision(col, PlayerManager.instance.player2.GetComponent<Collider2D>());
-        Physics2D.IgnoreCollision(col, PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>());
+        if (PlayerManager.instance.player2 != null)
+        {
+            Physics2D.IgnoreCollision(col, PlayerManager.instance.player2.GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(col, PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>());
+        }
     }
 }
