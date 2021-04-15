@@ -130,12 +130,12 @@ public class Player : MonoBehaviour
             }
             if (direction < 0)
             {
-                transform.localScale = new Vector3(1, -1, 1);
+                transform.localScale = new Vector3(1, 1, 1);
                 inversedSprite = true;
             }
             else if (direction > 0)
             {
-                transform.localScale = new Vector3(1, 1, 1);
+                transform.localScale = new Vector3(-1, 1, 1);
                 inversedSprite = false;
             }
 
@@ -224,6 +224,7 @@ public class Player : MonoBehaviour
         if (Input.GetKeyDown(keyAttack))
         {
             Attack();
+            print("mouse");
         }
         
     }
@@ -391,20 +392,20 @@ public class Player : MonoBehaviour
                     GameObject swordThrow = Instantiate(swordPrefab, sword.transform.position, transform.rotation);
                     Physics2D.IgnoreCollision(col, swordThrow.GetComponent<Collider2D>());
                     Physics2D.IgnoreCollision(colEnfant, swordThrow.GetComponent<Collider2D>());
-                    swordThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    swordThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
                     break;
 
                 case Weapon.TYPE.ARC:
                     GameObject arcThrow = Instantiate(arcPrefab, sword.transform.position, transform.rotation);
                     Physics2D.IgnoreCollision(col, arcThrow.GetComponent<Collider2D>());
                     Physics2D.IgnoreCollision(colEnfant, arcThrow.GetComponent<Collider2D>());
-                    arcThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    arcThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
                     break;
                 case Weapon.TYPE.PIG:
                     GameObject pigThrow = Instantiate(pigPrefab, sword.transform.position, transform.rotation);
                     Physics2D.IgnoreCollision(col, pigThrow.GetComponent<Collider2D>());
                     Physics2D.IgnoreCollision(colEnfant,pigThrow.GetComponent<Collider2D>());
-                    pigThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(transform.localScale.y * throwStrength, 0), ForceMode2D.Impulse);
+                    pigThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
                     break;
             }
 
@@ -436,9 +437,11 @@ public class Player : MonoBehaviour
                 {
                     sens = -1;
                     newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
+                    print("bug");
                 }
                 Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
                 newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
+                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
 
             }
             if (PlayerWeapon == Weapon.TYPE.PIG)
@@ -485,6 +488,11 @@ public class Player : MonoBehaviour
         canAttack = false;
         yield return new WaitForSeconds(delay);
         canAttack = true;
+    }
+
+    void FonctionAnimation()
+    {
+        Debug.Log("Animation fonction");
     }
 
 }
