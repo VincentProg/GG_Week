@@ -10,6 +10,7 @@ public class Arrow : MonoBehaviour
     void Start()
     {
         rb = GetComponent<Rigidbody2D>();
+        print("arrow");
     }
 
     // Update is called once per frame
@@ -26,6 +27,7 @@ public class Arrow : MonoBehaviour
             //transform.parent = collision.transform;
             Destroy(gameObject);
             collision.transform.GetComponent<Player>().Death();
+            
         }
         else
         {
