@@ -59,20 +59,25 @@ public class Player : MonoBehaviour
     public Weapon.TYPE PlayerWeapon = Weapon.TYPE.PUNCH;
 
     private bool canAttack = true;
-    public GameObject punch;
-    public GameObject sword;
-    public GameObject arc;
+    //public GameObject punch;
+    //public GameObject sword;
+    //public GameObject arc;
     public GameObject arrow;
     public float arrowSpeed;
     public float delayArc;
     public GameObject pig;
     public float throwStrength;
 
-    public GameObject swordPrefab;
-    public GameObject arcPrefab;
-    public GameObject pigPrefab;
+    //public GameObject swordPrefab;
+    //public GameObject arcPrefab;
+    //public GameObject pigPrefab;
 
-    public List<Weapon> weaponsNear = new List<Weapon>();
+    public Transform myWeaponTransform;
+    public Weapon myWeapon;
+    public List<Transform> posWeapon = new List<Transform>();
+    public Transform posWeaponAttack1;
+    public Transform posWeaponattack2;
+
     // ------------------------------------------------- HEALTH
 
     public bool isDead = false;
@@ -106,6 +111,14 @@ public class Player : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         rouladeChild = transform.GetChild(0).GetComponent<Collider2D>();
+        //Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.GetComponent<Collider2D>());
+        //Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>());
+        //Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.GetComponent<Collider2D>());
+        //Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>());
+        myWeapon.Pos = posWeapon;
+        myWeapon.posAttack1 = posWeaponAttack1;
+        myWeapon.posAttack2 = posWeaponattack2;
+        myWeapon.owner = this;
     }
 
     // Update is called once per frame
@@ -184,18 +197,8 @@ public class Player : MonoBehaviour
                         GetDown();
                     }
 
-                    if (PlayerWeapon == Weapon.TYPE.PUNCH) // ------------ PICK UP WEAPON
-                    {
-                        Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, 0.5f), 0.3f);
-                        for (int i = 0; i < objects.Length; i++)
-                        {
-                            if (objects[i].GetComponent<Weapon>())
-                            {
-                                PickUpWeapon(objects[i].GetComponent<Weapon>().thisWeapon);
-                                Destroy(objects[i].gameObject);
-                            }
-                        }
-                    }
+                    PickUpWeapon();
+
                 }
             }
 
@@ -205,6 +208,8 @@ public class Player : MonoBehaviour
                 {
                     GetUp();
                 }
+
+               
             }
 
             if (Input.GetKeyDown(keyThrow))
@@ -223,15 +228,15 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(keyAttack))
         {
-            Attack();
-            print("mouse");
+            if(myWeapon != null)
+            myWeapon.StartAttack();
         }
         
     }
 
     private void OnDrawGizmos()
     {
-        Gizmos.DrawLine(transform.position - new Vector3(0,0.5f), transform.position + (Vector3.right * 0.3f) - new Vector3(0, 0.5f));
+        Gizmos.DrawLine(transform.position - new Vector3(0,0.5f), transform.position + (Vector3.right * 0.8f) - new Vector3(0, 0.5f));
     }
 
     private void FixedUpdate()
@@ -349,29 +354,35 @@ public class Player : MonoBehaviour
 
 
 
-    // --------------------------------------------------------- WEAPONS
+    // ------------------------------------------------------------------------------------------------------------------- WEAPONS
 
 
 
 
-    public void PickUpWeapon(Weapon.TYPE weapon)
+    public void PickUpWeapon()
     {
-
-
-        if(weapon == Weapon.TYPE.SWORD)
+        
+        if (myWeapon == null) // ------------ PICK UP WEAPON
         {
-            PlayerWeapon = Weapon.TYPE.SWORD;
-            return;
+            Collider2D[] objects = Physics2D.OverlapCircleAll(transform.position - new Vector3(0, 0.8f), 0.5f);
+            for (int i = 0; i < objects.Length; i++)
+            {
+                if (objects[i].GetComponent<Weapon>() && objects[i].GetComponent<Weapon>().owner == null)
+                {
+                    myWeaponTransform = objects[i].transform;
+                    myWeapon = objects[i].GetComponent<Weapon>() ;
+                    myWeapon.owner = this;
+                    myWeapon.Pos = posWeapon;
+                    myWeapon.posAttack1 = posWeaponAttack1;
+                    myWeapon.posAttack2 = posWeaponattack2;
+                    myWeaponTransform.GetComponent<Rigidbody2D>().gravityScale = 0;
+                    print("pickUp");
+                    return;
+                }
+            }
         }
-        if(weapon == Weapon.TYPE.ARC)
-        {
-            PlayerWeapon = Weapon.TYPE.ARC;
-            return;
-        }
-        if(weapon == Weapon.TYPE.PIG)
-        {
-            PlayerWeapon = Weapon.TYPE.PIG;
-        }
+        
+        
     }
 
     public void LoseWeapon()
@@ -381,36 +392,27 @@ public class Player : MonoBehaviour
 
     public void ThrowWeapon()
     {
-        if (PlayerWeapon != Weapon.TYPE.PUNCH)
+        if (myWeapon != null)
         {
-            Collider2D col = GetComponent<Collider2D>();
-            Collider2D colEnfant = transform.GetChild(0).GetComponent<Collider2D>();
+            myWeapon.colliderMortel = true;
 
-            switch (PlayerWeapon)
+            if (id == 1)
             {
-                case Weapon.TYPE.SWORD:
-                    GameObject swordThrow = Instantiate(swordPrefab, sword.transform.position, transform.rotation);
-                    Physics2D.IgnoreCollision(col, swordThrow.GetComponent<Collider2D>());
-                    Physics2D.IgnoreCollision(colEnfant, swordThrow.GetComponent<Collider2D>());
-                    swordThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
-                    break;
-
-                case Weapon.TYPE.ARC:
-                    GameObject arcThrow = Instantiate(arcPrefab, sword.transform.position, transform.rotation);
-                    Physics2D.IgnoreCollision(col, arcThrow.GetComponent<Collider2D>());
-                    Physics2D.IgnoreCollision(colEnfant, arcThrow.GetComponent<Collider2D>());
-                    arcThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
-                    break;
-                case Weapon.TYPE.PIG:
-                    GameObject pigThrow = Instantiate(pigPrefab, sword.transform.position, transform.rotation);
-                    Physics2D.IgnoreCollision(col, pigThrow.GetComponent<Collider2D>());
-                    Physics2D.IgnoreCollision(colEnfant,pigThrow.GetComponent<Collider2D>());
-                    pigThrow.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
-                    break;
+                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.GetComponent<Collider2D>(), false);
+                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>(), false);
+            } else
+            {
+                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.GetComponent<Collider2D>(), false);
+                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>(), false);
             }
+            myWeapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
+            myWeapon.owner = null;
+            myWeapon = null;
+            myWeaponTransform = null;
+        
 
-            PlayerWeapon = Weapon.TYPE.PUNCH;
         }
+
         
     }
 
@@ -430,18 +432,18 @@ public class Player : MonoBehaviour
             if (PlayerWeapon == Weapon.TYPE.ARC)
             {
 
-                StartCoroutine(DelayAttack(delayArc));
-                int sens = 1;
-                GameObject newArrow = Instantiate(arrow, arc.transform.position, arrow.transform.rotation);
-                if (inversedSprite)
-                {
-                    sens = -1;
-                    newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
-                    print("bug");
-                }
-                Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
-                newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
-                Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
+                //StartCoroutine(DelayAttack(delayArc));
+                //int sens = 1;
+                //GameObject newArrow = Instantiate(arrow, arc.transform.position, arrow.transform.rotation);
+                //if (inversedSprite)
+                //{
+                //    sens = -1;
+                //    newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
+                //    print("bug");
+                //}
+                //Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
+                //newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
+                //Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
 
             }
             if (PlayerWeapon == Weapon.TYPE.PIG)
@@ -466,6 +468,15 @@ public class Player : MonoBehaviour
     public void Death()
     {
         isDead = true;
+        if (myWeapon != null)
+        {
+            myWeaponTransform.GetComponent<Rigidbody2D>().gravityScale = 1;
+            myWeapon.owner = null;
+            myWeapon = null;
+            myWeaponTransform = null;
+        }
+
+
         gameObject.SetActive(false);
         PlayerManager.instance.DeathPlayer(this);
     }
