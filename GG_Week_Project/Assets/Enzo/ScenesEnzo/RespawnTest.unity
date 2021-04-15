@@ -223,13 +223,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1c9fc79a8a6da41479de95ca39093a84, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player1: {fileID: 1153376736}
-  Player2: {fileID: 682122651}
+  speedCamera: 0
   LeftCol: {fileID: 1379174254}
   RightCol: {fileID: 1260711590}
-  neutre: 1
-  DominantPlayer1: 0
-  DominantPlayer2: 0
+  Wall_P1: {fileID: 0}
+  Wall_P2: {fileID: 0}
+  canMove: 0
 --- !u!1 &278040165
 GameObject:
   m_ObjectHideFlags: 0

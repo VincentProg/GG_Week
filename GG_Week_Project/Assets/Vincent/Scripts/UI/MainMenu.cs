@@ -11,18 +11,12 @@ public class MainMenu : MonoBehaviour
 
     public void Play()
     {
-        if (SceneToLoad_Play != "") 
-        {
-            SceneManager.LoadScene(SceneToLoad_Play);
-            return;
-        }
-        print("No scene is linked!");
+        SceneManager.LoadScene("SelectorMenu");
     }
 
     public void Credits()
     {
         SceneManager.LoadScene("CreditsMenu");
-
     }
 
     public void Quit()

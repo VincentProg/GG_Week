@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Player1
   - Player2
+  - Weapon
   layers:
   - Default
   - TransparentFX
@@ -13,13 +14,13 @@ TagManager:
   - 
   - Water
   - UI
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
-  - 
+  - Wall_And_Ground
+  - CheckWalls_And_Ground
+  - WeaponTrigger
+  - WeaponSolid
+  - Player
+  - Victory
+  - WallCamera
   - 
   - 
   - 
