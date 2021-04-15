@@ -33,10 +33,14 @@ public class Weapon : MonoBehaviour
 
     public List<Transform> Pos = new List<Transform>();
 
+    bool reverse;
     public Sprite swordSprite;
     public Sprite arcSprite;
     public Sprite pigSprite;
 
+
+    public GameObject arrow;
+    public float arrowSpeed;
 
     private void Start()
     {
@@ -78,7 +82,7 @@ public class Weapon : MonoBehaviour
 
         if (isAttacking)
         {
-            MiddleAttack();
+            MiddleSWORDAttack();
         }
         
     }
@@ -97,22 +101,24 @@ public class Weapon : MonoBehaviour
                 if (transform.position.x - posAttack1.position.x < 0)
                 {
                     transform.localScale = new Vector3(1, 1, 1);
+                    reverse = false;
                 }
-                else transform.localScale = new Vector3(-1, 1, 1);
+                else
+                {
+                    transform.localScale = new Vector3(-1, 1, 1);
+                    reverse = true;
+                }
 
                 Vector3 direction = new Vector2(transformAim.position.x - transform.position.x, transformAim.position.y - transform.position.y);
                 float distanceFromAim = direction.magnitude;
                 transform.position = transform.position + direction.normalized * distanceFromAim * speed * Time.fixedDeltaTime;
-            }
-            else
-            {
-
             }
         }
     }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
+
         if (owner == null && colliderMortel)
         {
             if (collision.gameObject.CompareTag("Player"))
@@ -136,39 +142,45 @@ public class Weapon : MonoBehaviour
 
     public void StartAttack()
     {
-        isAttacking = true;
-        if (!owner.isCrouch)
+        if (thisWeapon == TYPE.SWORD)
         {
-            vectorAim = posAttack1.position;
-        }
-        else
+            isAttacking = true;
+            if (!owner.isCrouch)
+            {
+                vectorAim = posAttack1.position;
+            }
+            else
+            {
+                vectorAim = posAttack2.position;
+            }
+
+            timeSave = Time.time;
+            AudioManager.instance.Play("Slash");
+
+        } else if(thisWeapon == TYPE.ARC)
         {
-            vectorAim = posAttack2.position;
+            int sens = 1;
+            GameObject newArrow = Instantiate(arrow, transform.position, arrow.transform.rotation);
+            if (reverse)
+            {
+                sens = -1;
+                newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
+                print("bug");
+            }
+            Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
+            newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
+            Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
+            Physics2D.IgnoreCollision(owner.transform.GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
         }
-
-        //if(owner.id == 1)
-        //{
-
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player2.GetComponent<Collider2D>(), false);
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>(), false);
-
-        //} else
-        //{
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player1.GetComponent<Collider2D>(), false);
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>(), false);
-        //}
-        timeSave = Time.time;
 
     }
 
-    private void MiddleAttack()
+    private void MiddleSWORDAttack()
     {
         float time = (Time.time - timeSave) * speedAttack ;
         transform.position = Vector2.Lerp(transform.position, vectorAim, time);
-        if(time > 0.1f)
-        {
-            ThrowRaycast();
-        }
+        ThrowRaycast();
+
 
         if(time >= 1)
         {
@@ -176,17 +188,6 @@ public class Weapon : MonoBehaviour
             
         }
 
-        //if (owner.id == 1)
-        //{
-
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player2.GetComponent<Collider2D>());
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>());
-        //}
-        //else
-        //{
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player1.GetComponent<Collider2D>());
-        //    Physics2D.IgnoreCollision(colChild, PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>());
-        //}
     }
     
 
@@ -220,4 +221,8 @@ public class Weapon : MonoBehaviour
     {
         Gizmos.DrawLine(transform.position, transform.position + transform.right * rangeAttack);
     }
+
+
+
+
 }

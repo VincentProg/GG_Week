@@ -23,6 +23,7 @@ public class SlectorMenu : MonoBehaviour
     public KeyCode keyPlay;
     public GameObject choseCharacter;
 
+
     void Start()
     {
         KnightP1.enabled = false;
@@ -136,7 +137,7 @@ public class SlectorMenu : MonoBehaviour
         if (Player1HasSelected && Player2HasSelected)
         {
             PlayerManager.instance.Save();
-            SceneManager.LoadScene(sceneFight);
+            StartCoroutine(LaunchFight());
         }
         else StartCoroutine("Warning");
     }
@@ -148,5 +149,12 @@ public class SlectorMenu : MonoBehaviour
         choseCharacter.SetActive(false);
     }
 
-
+    IEnumerator LaunchFight()
+    {
+        AudioManager.instance.Play("Pig");
+        yield return new WaitForSeconds(1);
+        AudioManager.instance.StopPlaying("Theme");
+        AudioManager.instance = null;
+        SceneManager.LoadScene(sceneFight);
+    }
 }

@@ -50,7 +50,7 @@ public class Player : MonoBehaviour
     public bool onWall = false;
     private Rigidbody2D rb;
 
-    private float direction;
+    private int direction;
 
 
 
@@ -108,6 +108,7 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+        anim = GetComponent<Animator>();
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         rouladeChild = transform.GetChild(0).GetComponent<Collider2D>();
@@ -128,10 +129,14 @@ public class Player : MonoBehaviour
         {
             if (Input.GetKeyDown(keyMoveLeft))
             {
+                if(isGrippingWall)
+                anim.SetBool("GrippingWall", false);
                 direction--;
             }
             if (Input.GetKeyDown(keyMoveRight))
             {
+                if (isGrippingWall)
+                    anim.SetBool("GrippingWall", false);
                 direction++;
             }
             if (Input.GetKeyUp(keyMoveLeft)){
@@ -145,24 +150,32 @@ public class Player : MonoBehaviour
             {
                 transform.localScale = new Vector3(1, 1, 1);
                 inversedSprite = true;
+               
+
             }
             else if (direction > 0)
             {
                 transform.localScale = new Vector3(-1, 1, 1);
                 inversedSprite = false;
+
             }
+            anim.SetInteger("Direction", direction);
+
 
             if (Input.GetKeyDown(keyJump))
             {
                 if (grounded)
                 {
                     Jump();
+                    anim.SetBool("Crouch", false);
+
                     if (!canRoulade)
                     {
                         StopRoulade();
                     }
                     if(isGrippingWall){
                         isGrippingWall = false;
+                        anim.SetBool("GrippingWall", false);
                     }
                     
                 }
@@ -177,6 +190,8 @@ public class Player : MonoBehaviour
                     if (isGrippingWall)
                     {
                         isGrippingWall = false;
+                        anim.SetBool("GrippingWall", false);
+
                     }
                 }
             }
@@ -190,14 +205,17 @@ public class Player : MonoBehaviour
                         if (canRoulade)
                         {
                             rouladeCoroutine = StartCoroutine(Roulade(durationRoulade));
+
                         }
                     }
                     else
                     {
                         GetDown();
+
                     }
 
                     PickUpWeapon();
+                    anim.SetBool("Crouch", true);
 
                 }
             }
@@ -207,6 +225,7 @@ public class Player : MonoBehaviour
                 if (isDown)
                 {
                     GetUp();
+                    anim.SetBool("Crouch", false);
                 }
 
                
@@ -228,8 +247,12 @@ public class Player : MonoBehaviour
 
         if (Input.GetKeyDown(keyAttack))
         {
-            if(myWeapon != null)
-            myWeapon.StartAttack();
+            if (canAttack && myWeapon != null)
+            {
+                StartCoroutine(DelayAttack(0.5f));
+                myWeapon.StartAttack();
+
+            }
         }
         
     }
@@ -262,22 +285,25 @@ public class Player : MonoBehaviour
         if (hit)
         {
             grounded = true;
+           
         } else
         {
             grounded = false;
         }
-
+        anim.SetBool("Grounded", grounded);
         Debug.DrawLine(checkground.position, checkground.position + Vector3.down * 0.2f);
     }
 
     private void Jump()
-    {       
+    {
+        anim.SetTrigger("Jump");
         Vector2 jump = new Vector2(0, jumpForce);
         rb.AddForce(jump, ForceMode2D.Impulse);        
     }
 
     private void WallJump()
     {
+        anim.SetTrigger("Jump");
         rb.velocity = Vector2.zero;
         Vector2 wallJump = new Vector2(-direction * wallJumpForce, wallJumpForce);
         rb.AddForce(wallJump, ForceMode2D.Impulse);
@@ -287,21 +313,18 @@ public class Player : MonoBehaviour
     IEnumerator Roulade(float duration)
     {
         isCrouch = true;
+        anim.SetBool("Crouch", true);
         canRoulade = false;
         rouladeChild.enabled = true;
         playerCollider.enabled = false;
         speed *= accelerationRoulade;
-        GetComponent<SpriteRenderer>().enabled = false; // --------------------------------TEMPORARY
-        rouladeChild.GetComponent<SpriteRenderer>().enabled = true;  // --------------------------------TEMPORARY
         yield return new WaitForSeconds(duration);
         speed /= accelerationRoulade;
         canRoulade = true;
 
         if (!Input.GetKey(KeyCode.LeftControl))
         {
-         
-            GetComponent<SpriteRenderer>().enabled = true;  // --------------------------------TEMPORARY
-            rouladeChild.GetComponent<SpriteRenderer>().enabled = false;  // --------------------------------TEMPORARY
+            anim.SetBool("Crouch", false);
             rouladeChild.enabled = false;
             playerCollider.enabled = true;
         } else
@@ -313,6 +336,7 @@ public class Player : MonoBehaviour
     private void StopRoulade()
     {
         isCrouch = false;
+        anim.SetBool("Crouch", false);
         StopCoroutine(rouladeCoroutine);
         GetComponent<SpriteRenderer>().enabled = true;
         rouladeChild.GetComponent<SpriteRenderer>().enabled = false;
@@ -326,30 +350,30 @@ public class Player : MonoBehaviour
     private void GetDown()
     {
         isCrouch = true;
+        anim.SetBool("Crouch", true);
         isDown = true;
         speed *= speedDown;
         rouladeChild.enabled = true;
         playerCollider.enabled = false;
-        GetComponent<SpriteRenderer>().enabled = false;
-        rouladeChild.GetComponent<SpriteRenderer>().enabled = true;
     }
 
     private void GetUp()
     {
+        anim.SetBool("Crouch", false);
         isCrouch = false;
         isDown = false;
         speed /= speedDown;
         rouladeChild.enabled = false;
         playerCollider.enabled = true;
-        GetComponent<SpriteRenderer>().enabled = true;
-        rouladeChild.GetComponent<SpriteRenderer>().enabled = false;
     }
 
     public IEnumerator GripWall()
     {
         isGrippingWall = true;
+        anim.SetBool("GrippingWall", true);
         yield return new WaitForSeconds(0.7f);
         isGrippingWall = false;
+        anim.SetBool("GrippingWall", false);
     }
 
 
@@ -376,7 +400,7 @@ public class Player : MonoBehaviour
                     myWeapon.posAttack1 = posWeaponAttack1;
                     myWeapon.posAttack2 = posWeaponattack2;
                     myWeaponTransform.GetComponent<Rigidbody2D>().gravityScale = 0;
-                    print("pickUp");
+                    myWeaponTransform.rotation = Quaternion.Euler(new Vector3(0, 0, 0));                   
                     return;
                 }
             }
@@ -394,21 +418,25 @@ public class Player : MonoBehaviour
     {
         if (myWeapon != null)
         {
-            myWeapon.colliderMortel = true;
+            if (myWeapon.thisWeapon != Weapon.TYPE.ARC)
+            {
+                myWeapon.colliderMortel = true;
 
-            if (id == 1)
-            {
-                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.GetComponent<Collider2D>(), false);
-                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>(), false);
-            } else
-            {
-                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.GetComponent<Collider2D>(), false);
-                Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>(), false);
+                if (id == 1)
+                {
+                    Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.GetComponent<Collider2D>(), false);
+                    Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player2.transform.GetChild(0).GetComponent<Collider2D>(), false);
+                }
+                else
+                {
+                    Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.GetComponent<Collider2D>(), false);
+                    Physics2D.IgnoreCollision(myWeaponTransform.GetComponent<Collider2D>(), PlayerManager.instance.player1.transform.GetChild(0).GetComponent<Collider2D>(), false);
+                }
+                myWeapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
+                myWeapon.owner = null;
+                myWeapon = null;
+                myWeaponTransform = null;
             }
-            myWeapon.GetComponent<Rigidbody2D>().AddForce(new Vector2(-transform.localScale.x * throwStrength, 0), ForceMode2D.Impulse);
-            myWeapon.owner = null;
-            myWeapon = null;
-            myWeaponTransform = null;
         
 
         }
@@ -432,18 +460,7 @@ public class Player : MonoBehaviour
             if (PlayerWeapon == Weapon.TYPE.ARC)
             {
 
-                //StartCoroutine(DelayAttack(delayArc));
-                //int sens = 1;
-                //GameObject newArrow = Instantiate(arrow, arc.transform.position, arrow.transform.rotation);
-                //if (inversedSprite)
-                //{
-                //    sens = -1;
-                //    newArrow.transform.localScale = new Vector2(-1, newArrow.transform.localScale.y);
-                //    print("bug");
-                //}
-                //Vector2 arrowImpulse = new Vector2(sens * arrowSpeed, 0);
-                //newArrow.GetComponent<Rigidbody2D>().AddForce(arrowImpulse, ForceMode2D.Impulse);
-                //Physics2D.IgnoreCollision(GetComponent<Collider2D>(), newArrow.GetComponent<Collider2D>());
+
 
             }
             if (PlayerWeapon == Weapon.TYPE.PIG)
@@ -476,6 +493,19 @@ public class Player : MonoBehaviour
             myWeaponTransform = null;
         }
 
+        int random = Random.Range(1, 4);
+        switch (random)
+        {
+            case 1:
+                AudioManager.instance.Play("Death1");
+                break;
+            case 2:
+                AudioManager.instance.Play("Death2");
+                break;
+            case 3:
+                AudioManager.instance.Play("Death3");
+                break;
+        }
 
         gameObject.SetActive(false);
         PlayerManager.instance.DeathPlayer(this);
@@ -494,16 +524,16 @@ public class Player : MonoBehaviour
         }
     }
 
-    IEnumerator DelayAttack(float delay)
-    {
-        canAttack = false;
-        yield return new WaitForSeconds(delay);
-        canAttack = true;
-    }
 
     void FonctionAnimation()
     {
         Debug.Log("Animation fonction");
     }
 
+    IEnumerator DelayAttack(float delay)
+    {
+        canAttack = false;
+        yield return new WaitForSeconds(delay);
+        canAttack = true;
+    }
 }
