@@ -19034,6 +19034,10 @@ MonoBehaviour:
   wallBeforeKillR: {fileID: 672534427}
   arrowDirectionP1: {fileID: 1927089839}
   arrowDirectionP2: {fileID: 606508382}
+  Sword: {fileID: 0}
+  Arc: {fileID: 3609171349439763474, guid: 400ff6c9f8b52c843900d505a0d33180, type: 3}
+  Spear: {fileID: 0}
+  weaponScene: 2
   classPlayer1: 0
   classPlayer2: 0
   princessAnim: {fileID: 0}

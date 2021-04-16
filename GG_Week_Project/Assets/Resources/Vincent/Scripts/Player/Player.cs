@@ -438,7 +438,7 @@ public class Player : MonoBehaviour
     {
         if (myWeapon != null)
         {
-            if (myWeapon.thisWeapon != Weapon.TYPE.ARC)
+            if (myWeapon.thisWeapon != Weapon.TYPE.ARC && myWeapon.thisWeapon != Weapon.TYPE.PIG)
             {
                 myWeapon.colliderMortel = true;
 
