@@ -46,6 +46,9 @@ public class PlayerManager : MonoBehaviour
     public Transform respawnP2_2;
     public Transform respawnP2_3;
 
+    public List<Transform> respawnsP1 = new List<Transform>();
+    public List<Transform> respawnsP2 = new List<Transform>();
+
     public bool neutral;
     public bool player1Dominant;
 
@@ -169,37 +172,58 @@ public class PlayerManager : MonoBehaviour
         yield return new WaitForSeconds(2);
         if(player == player1)
         {
-            Vector2 distP2_R1_1 = new Vector2(respawnP1_1.position.x - transformPlayer2.position.x, 0);
-            Vector2 distP2_R1_2 = new Vector2(respawnP1_2.position.x - transformPlayer2.position.x, 0);
-            print(distP2_R1_1);
-            if(distP2_R1_1.x < -5)
+            //Vector2 distP2_R1_1 = new Vector2(respawnP1_1.position.x - transformPlayer2.position.x, 0);
+            //Vector2 distP2_R1_2 = new Vector2(respawnP1_2.position.x - transformPlayer2.position.x, 0);
+            //print(distP2_R1_1);
+            //if(distP2_R1_1.x < -5)
+            //{
+            //    transformPlayer1.position = respawnP1_1.position;
+            //} else if(distP2_R1_2.x < -5)
+            //{
+            //    transformPlayer1.position = respawnP1_2.position;
+            //} else
+            //{
+            //    transformPlayer1.position = respawnP1_3.position;
+            //}
+            //transformPlayer1.gameObject.SetActive(true);
+
+            for(int i = 0; i < respawnsP1.Count; i++)
             {
-                transformPlayer1.position = respawnP1_1.position;
-            } else if(distP2_R1_2.x < -5)
-            {
-                transformPlayer1.position = respawnP1_2.position;
-            } else
-            {
-                transformPlayer1.position = respawnP1_3.position;
+                Vector2 distance = new Vector2(respawnsP1[i].position.x - transformPlayer2.position.x, 0);
+                if(distance.x < -5)
+                {
+                    transformPlayer1.position = respawnsP1[i].position;
+                    break;
+                } else transformPlayer1.position = respawnsP1[respawnsP1.Count-1].position;
             }
             transformPlayer1.gameObject.SetActive(true);
             player1.isDead = false;
             player1.ResetDirection();
         } else
         {
-            Vector2 distP1_R2_1 = new Vector2(respawnP2_1.position.x - transformPlayer1.position.x, 0);
-            Vector2 distP1_R2_2 = new Vector2(respawnP2_2.position.x - transformPlayer1.position.x, 0);
-            print(distP1_R2_1);
-            if (distP1_R2_1.x > 5)
+            //Vector2 distP1_R2_1 = new Vector2(respawnP2_1.position.x - transformPlayer1.position.x, 0);
+            //Vector2 distP1_R2_2 = new Vector2(respawnP2_2.position.x - transformPlayer1.position.x, 0);
+            //print(distP1_R2_1);
+            //if (distP1_R2_1.x > 5)
+            //{
+            //    transformPlayer2.position = respawnP2_1.position;
+            //}
+            //else if(distP1_R2_2.x > 5)
+            //{
+            //    transformPlayer2.position = respawnP2_2.position;
+            //} else
+            //{
+            //    transformPlayer2.position = respawnP2_3.position;
+            //}
+            for (int i = 0; i < respawnsP2.Count; i++)
             {
-                transformPlayer2.position = respawnP2_1.position;
-            }
-            else if(distP1_R2_2.x > 5)
-            {
-                transformPlayer2.position = respawnP2_2.position;
-            } else
-            {
-                transformPlayer2.position = respawnP2_3.position;
+                Vector2 distance = new Vector2(respawnsP2[i].position.x - transformPlayer1.position.x, 0);
+                if (distance.x > 5)
+                {
+                    transformPlayer2.position = respawnsP2[i].position;
+                    break;
+                }
+                else transformPlayer2.position = respawnsP2[respawnsP1.Count - 1].position;
             }
             transformPlayer2.gameObject.SetActive(true);
             player2.isDead = false;

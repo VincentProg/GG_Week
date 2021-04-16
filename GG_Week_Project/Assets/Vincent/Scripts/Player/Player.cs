@@ -89,6 +89,8 @@ public class Player : MonoBehaviour
 
     // -------------------------------------------------- ANIMATIONS
     public Animator anim;
+    public Animator animPig;
+    public bool isPig;
 
     // Start is called before the first frame update
 
@@ -108,7 +110,12 @@ public class Player : MonoBehaviour
 
     void Start()
     {
+
         anim = GetComponent<Animator>();
+        if (isPig)
+        {
+            anim.runtimeAnimatorController = Resources.Load<RuntimeAnimatorController>("PlayerPig");
+        }
         rb = GetComponent<Rigidbody2D>();
         playerCollider = GetComponent<Collider2D>();
         rouladeChild = transform.GetChild(0).GetComponent<Collider2D>();
