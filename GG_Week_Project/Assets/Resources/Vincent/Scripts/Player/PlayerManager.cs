@@ -266,7 +266,7 @@ public class PlayerManager : MonoBehaviour
             {
                 GameObject newSword = Instantiate(Sword, transformPlayer2.position, transform.rotation);
                 Weapon script = newSword.GetComponent<Weapon>();
-                script.thisWeapon = Weapon.TYPE.ARC;
+                script.thisWeapon = Weapon.TYPE.SWORD;
                 script.owner = player2;
                 player2.myWeapon = script;
                 player2.myWeaponTransform = newSword.transform;

@@ -9848,9 +9848,25 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
+      propertyPath: keyDown
+      value: 115
+      objectReference: {fileID: 0}
+    - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
+      propertyPath: keyJump
+      value: 122
+      objectReference: {fileID: 0}
+    - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
+      propertyPath: keyThrow
+      value: 118
+      objectReference: {fileID: 0}
+    - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
       propertyPath: myWeapon
       value: 
       objectReference: {fileID: 1674954934}
+    - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
+      propertyPath: keyAttack
+      value: 32
+      objectReference: {fileID: 0}
     - target: {fileID: 5739857411302277028, guid: cec92a1b9ed2c26448b0f81fd6ea842a, type: 3}
       propertyPath: myWeaponTransform
       value: 
