@@ -12,6 +12,8 @@ public class AudioManager : MonoBehaviour
 
     void Awake()
     {
+        transform.parent = null;
+
         if (instance == null)
         {
             instance = this;

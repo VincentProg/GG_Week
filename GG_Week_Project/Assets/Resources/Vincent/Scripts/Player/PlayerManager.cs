@@ -24,6 +24,12 @@ public class PlayerManager : MonoBehaviour
     public GameObject arrowDirectionP1;
     public GameObject arrowDirectionP2;
 
+    public GameObject Sword;
+    public GameObject Arc;
+    public GameObject Spear;
+
+    public Weapon.TYPE weaponScene;
+
 
     //[HideInInspector]
     //public enum WEAPON { PUNCH, SWORD, ARC, PIG }
@@ -187,51 +193,61 @@ public class PlayerManager : MonoBehaviour
     IEnumerator RespawnPlayer(Player player)
     {
         yield return new WaitForSeconds(1);
-        if(player == player1)
+        if (player == player1)
         {
-            //Vector2 distP2_R1_1 = new Vector2(respawnP1_1.position.x - transformPlayer2.position.x, 0);
-            //Vector2 distP2_R1_2 = new Vector2(respawnP1_2.position.x - transformPlayer2.position.x, 0);
-            //print(distP2_R1_1);
-            //if(distP2_R1_1.x < -5)
-            //{
-            //    transformPlayer1.position = respawnP1_1.position;
-            //} else if(distP2_R1_2.x < -5)
-            //{
-            //    transformPlayer1.position = respawnP1_2.position;
-            //} else
-            //{
-            //    transformPlayer1.position = respawnP1_3.position;
-            //}
-            //transformPlayer1.gameObject.SetActive(true);
 
-            for(int i = 0; i < respawnsP1.Count; i++)
+            for (int i = 0; i < respawnsP1.Count; i++)
             {
                 Vector2 distance = new Vector2(respawnsP1[i].position.x - transformPlayer2.position.x, 0);
-                if(distance.x < -5)
+                if (distance.x < -5)
                 {
                     transformPlayer1.position = respawnsP1[i].position;
                     break;
-                } else transformPlayer1.position = respawnsP1[respawnsP1.Count-1].position;
+                }
+                else transformPlayer1.position = respawnsP1[respawnsP1.Count - 1].position;
             }
             transformPlayer1.gameObject.SetActive(true);
             player1.isDead = false;
             player1.ResetDirection();
-        } else
+            if (weaponScene == Weapon.TYPE.SWORD)
+            {
+                GameObject newSword = Instantiate(Sword, transformPlayer1.position, transform.rotation);
+                Weapon script = newSword.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.SWORD;
+                script.owner = player1;
+                player1.myWeapon = script;
+                player1.myWeaponTransform = newSword.transform;
+                script.Pos = player1.posWeapon;
+                script.posAttack1 = player1.posWeaponAttack1;
+                script.posAttack2 = player1.posWeaponattack2;
+            }
+            else if (weaponScene == Weapon.TYPE.ARC)
+            {
+                GameObject newArc = Instantiate(Arc, transformPlayer1.position, transform.rotation);
+                Weapon script = newArc.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.ARC;
+                script.owner = player1;
+                player1.myWeapon = script;
+                player1.myWeaponTransform = newArc.transform;
+                script.Pos = player1.posWeapon;
+                script.posAttack1 = player1.posWeaponAttack1;
+                script.posAttack2 = player1.posWeaponattack2;
+            }
+            else
+            {
+                GameObject newArc = Instantiate(Spear, transformPlayer1.position, transform.rotation);
+                Weapon script = newArc.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.PIG;
+                script.owner = player1;
+                player1.myWeapon = script;
+                player1.myWeaponTransform = newArc.transform;
+                //script.Pos = player1.posWeapon;
+                //script.posAttack1 = player1.posWeaponAttack1;
+                //script.posAttack2 = player1.posWeaponattack2;
+            }
+        }
+        else
         {
-            //Vector2 distP1_R2_1 = new Vector2(respawnP2_1.position.x - transformPlayer1.position.x, 0);
-            //Vector2 distP1_R2_2 = new Vector2(respawnP2_2.position.x - transformPlayer1.position.x, 0);
-            //print(distP1_R2_1);
-            //if (distP1_R2_1.x > 5)
-            //{
-            //    transformPlayer2.position = respawnP2_1.position;
-            //}
-            //else if(distP1_R2_2.x > 5)
-            //{
-            //    transformPlayer2.position = respawnP2_2.position;
-            //} else
-            //{
-            //    transformPlayer2.position = respawnP2_3.position;
-            //}
             for (int i = 0; i < respawnsP2.Count; i++)
             {
                 Vector2 distance = new Vector2(respawnsP2[i].position.x - transformPlayer1.position.x, 0);
@@ -245,6 +261,41 @@ public class PlayerManager : MonoBehaviour
             transformPlayer2.gameObject.SetActive(true);
             player2.isDead = false;
             player2.ResetDirection();
+
+            if (weaponScene == Weapon.TYPE.SWORD)
+            {
+                GameObject newSword = Instantiate(Sword, transformPlayer2.position, transform.rotation);
+                Weapon script = newSword.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.ARC;
+                script.owner = player2;
+                player2.myWeapon = script;
+                player2.myWeaponTransform = newSword.transform;
+                script.Pos = player2.posWeapon;
+                script.posAttack1 = player2.posWeaponAttack1;
+                script.posAttack2 = player2.posWeaponattack2;
+
+            }
+            else if (weaponScene == Weapon.TYPE.ARC)
+            {
+                GameObject newArc = Instantiate(Arc, transformPlayer2.position, transform.rotation);
+                Weapon script = newArc.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.ARC;
+                script.owner = player2;
+                player2.myWeapon = script;
+                player2.myWeaponTransform = newArc.transform;
+                script.Pos = player2.posWeapon;
+                script.posAttack1 = player2.posWeaponAttack1;
+                script.posAttack2 = player2.posWeaponattack2;
+            }
+            else
+            {
+                GameObject newArc = Instantiate(Spear, transformPlayer2.position, transform.rotation);
+                Weapon script = newArc.GetComponent<Weapon>();
+                script.thisWeapon = Weapon.TYPE.PIG;
+                script.owner = player2;
+                player2.myWeapon = script;
+                player2.myWeaponTransform = newArc.transform;
+            }
         }
 
         neutral = true;

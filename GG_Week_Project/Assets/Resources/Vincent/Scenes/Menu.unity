@@ -1180,13 +1180,13 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Theme
     clip: {fileID: 8300000, guid: add15a04a29da3d41951d2962d56fa52, type: 3}
-    volume: 1
+    volume: 0.186
     pitch: 0
     loop: 1
     source: {fileID: 0}
   - name: Menu
     clip: {fileID: 8300000, guid: add15a04a29da3d41951d2962d56fa52, type: 3}
-    volume: 1
+    volume: 0.112
     pitch: 0
     loop: 0
     source: {fileID: 0}

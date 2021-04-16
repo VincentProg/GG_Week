@@ -5458,7 +5458,7 @@ MonoBehaviour:
     source: {fileID: 0}
   - name: Theme
     clip: {fileID: 8300000, guid: 0c58ed7e7754fa74ab127ba4f2ed75cb, type: 3}
-    volume: 1
+    volume: 0.291
     pitch: 0
     loop: 1
     source: {fileID: 0}
@@ -11908,6 +11908,10 @@ MonoBehaviour:
   wallBeforeKillR: {fileID: 824010241}
   arrowDirectionP1: {fileID: 1992967373}
   arrowDirectionP2: {fileID: 1532955480}
+  Sword: {fileID: 0}
+  Arc: {fileID: 0}
+  Spear: {fileID: 3485754912468600148, guid: 0f98e6d3d385522429f0182ee7edb011, type: 3}
+  weaponScene: 3
   classPlayer1: 0
   classPlayer2: 0
   princessAnim: {fileID: 0}
