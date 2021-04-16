@@ -5,19 +5,58 @@ EditorBuildSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 2
   m_Scenes:
-  - enabled: 1
-    path: Assets/Vincent/Scenes/Vincent.unity
+  - enabled: 0
+    path: Assets/Resources/Vincent/Scenes/Vincent.unity
     guid: 2cda990e2423bbf4892e6590ba056729
   - enabled: 1
-    path: Assets/Enzo/ScenesEnzo/PauseMenu.unity
+    path: Assets/Resources/Enzo/ScenesEnzo/PauseMenu.unity
     guid: d3a7c7b334784e2468873601adbb78b4
   - enabled: 1
-    path: Assets/Enzo/ScenesEnzo/CreditsMenu.unity
+    path: Assets/Resources/Enzo/ScenesEnzo/CreditsMenu.unity
     guid: a31c2cf60bc7cb84492a0a0abed27df5
   - enabled: 1
-    path: Assets/Vincent/Scenes/Menu.unity
+    path: Assets/Resources/Vincent/Scenes/Menu.unity
     guid: da8d89628ecf45e41ac709580529d5ba
   - enabled: 1
-    path: Assets/Enzo/ScenesEnzo/SelectorMenu.unity
+    path: Assets/Resources/Enzo/ScenesEnzo/SelectorMenu.unity
     guid: 254d2946e2a1451459c35608510709a1
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD0.unity
+    guid: fd77a83cb756ce2489f877181e93ade4
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD0_L.unity
+    guid: cc771b38373b6734d8ec1caf327a7dbe
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD0_R.unity
+    guid: 4a62b70856803f5499bba590acbc3cfb
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD1_L.unity
+    guid: 3dcc199cb78f78348a44bb5c38ed559b
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD1_R.unity
+    guid: bbfd4d682825b3f49a20125c7a289b50
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD2_L.unity
+    guid: 0ac6c18b919c03c4aa48bc092dc03728
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD3.unity
+    guid: 3caa1542eddb9d046a12982807d56f17
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD-3.unity
+    guid: b918d31e47e1b94418868da74d9dd082
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD-2.unity
+    guid: 8c4ead106eee12840b93741fe4704696
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD-1_R.unity
+    guid: 5040d0c6b3bdb224392ec38d54bc1b28
+  - enabled: 1
+    path: Assets/Resources/Nathan/Scene/LD-1_L.unity
+    guid: eb2fab5d28578fb48a1bbc1b5cc01ff7
+  - enabled: 1
+    path: Assets/Resources/Vincent/Scenes/VictoryP1.unity
+    guid: 6339bf02584b62e40942888850cc41dc
+  - enabled: 1
+    path: Assets/Resources/Vincent/Scenes/VictoryP2.unity
+    guid: e8145981f23d48a4ba13af9e5d225c83
   m_configObjects: {}
